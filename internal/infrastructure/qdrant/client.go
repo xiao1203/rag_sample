@@ -6,8 +6,9 @@ import (
 
 func NewQdrantClient() (*qdrant.Client, error) {
 	client, err := qdrant.NewClient(&qdrant.Config{
-		Host: "localhost",
-		Port: 6334,
+		Host:   "localhost",
+		Port:   6334,
+		UseTLS: false, // 開発環境ではTLSを無効化
 	})
 	if err != nil {
 		return nil, err

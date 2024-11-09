@@ -136,3 +136,4 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,goland
 
 tmp/
+.env

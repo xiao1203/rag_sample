@@ -3,8 +3,10 @@ version: '3'
 services:
   app:
     build: .
+    env_file:
+      - .env
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       - .:/app
     command: air
@@ -14,7 +16,8 @@ services:
   qdrant:
     image: qdrant/qdrant
     ports:
-      - "6333:6333"
+      - '6333:6333' # REST API用
+      - '6334:6334' # gRPC用
     volumes:
       - qdrant_data:/qdrant/storage
 

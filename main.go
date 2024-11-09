@@ -1,7 +1,10 @@
 package main
 
 import (
+	"os"
+
 	"github.com/labstack/echo/v4"
+	"github.com/xiao1203/rag_sample/internal/infrastructure/openai"
 	"github.com/xiao1203/rag_sample/internal/infrastructure/qdrant"
 	"github.com/xiao1203/rag_sample/internal/infrastructure/repository"
 	"github.com/xiao1203/rag_sample/internal/interface/controller"
@@ -17,7 +20,8 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	articleRepo := repository.NewArticleRepository(qdrantClient)
+	openAIService := openai.NewOpenAIService(os.Getenv("OPENAI_API_KEY"))
+	articleRepo := repository.NewArticleRepository(qdrantClient, openAIService, "rag_sample_collection")
 	articleUseCase := usecase.NewArticleUseCase(articleRepo)
 	articleController := controller.NewArticleController(articleUseCase)
 
