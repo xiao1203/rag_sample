@@ -7,5 +7,5 @@ import (
 
 func SetupRoutes(e *echo.Echo, articleController *controller.ArticleController) {
 	e.POST("/articles", articleController.SaveArticle)
-	e.GET("/articles/:id/qa", articleController.AnswerQuestion)
+	e.POST("/rag-answer", articleController.AnswerQuestion)
 }

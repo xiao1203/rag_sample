@@ -33,7 +33,7 @@ func (uc *ArticleUseCase) SaveArticle(url string) error {
 	return nil
 }
 
-func (uc *ArticleUseCase) AnswerQuestion(id string, question string) (string, error) {
+func (uc *ArticleUseCase) AnswerQuestion(question string) (string, error) {
 	// 質問に対する参照情報をQdrantから取得
 	referenceTexts, err := uc.articleRepository.FindSimilarTextsByText(question, 5)
 	if err != nil {

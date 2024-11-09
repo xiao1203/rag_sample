@@ -43,6 +43,7 @@ Go言語とベクトルDBを使ったLLM（大規模言語モデル）のRAG（R
 
 ## ディレクトリ構成
 
+- レイヤーごとのテストを書きたかったので、オニオンアーキテクチャっぽくしましたが、依存性逆転の法則を意識しているわけではなく、結構適当なので、あまり参考にしないでください。
 <!-- Treeコマンドを使ってディレクトリ構成を記載 -->
 
 ❯ tree -a -I "node_modules|.next|.git|.pytest_cache|static" -L 2
@@ -105,14 +106,7 @@ Go言語とベクトルDBを使ったLLM（大規模言語モデル）のRAG（R
 .env ファイルを以下の環境変数例と[環境変数の一覧](#環境変数の一覧)を元に作成
 
 .env
-MYSQL_ROOT_PASSWORD=root
-MYSQL_DATABASE=django-db
-MYSQL_USER=django
-MYSQL_PASSWORD=django
-MYSQL_HOST=db
-MYSQL_PORT=3306
-SECRET_KEY=django
-DJANGO_SETTINGS_MODULE=project.settings.local
+OPENAI_API_KEY= [openAIのAPIキー]
 
 .env ファイルを作成後、以下のコマンドで開発環境を構築
 
