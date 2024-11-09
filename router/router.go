@@ -1,13 +1,11 @@
 package router
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
+	"github.com/xiao1203/rag_sample/internal/interface/controller"
 )
 
-func router(e *echo.Echo) {
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello Go")
-	})
+func SetupRoutes(e *echo.Echo, articleController *controller.ArticleController) {
+	e.POST("/articles", articleController.SaveArticle)
+	e.GET("/articles/:id/qa", articleController.AnswerQuestion)
 }
