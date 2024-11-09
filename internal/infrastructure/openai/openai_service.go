@@ -20,7 +20,7 @@ func (s *openAIService) VectorizeText(text string) ([]float32, error) {
 	resp, err := s.client.CreateEmbeddings(
 		context.Background(),
 		openai.EmbeddingRequest{
-			Model: openai.AdaEmbeddingV2,
+			Model: openai.SmallEmbedding3,
 			Input: []string{text},
 		},
 	)
@@ -34,7 +34,7 @@ func (s *openAIService) GenerateText(prompt string) (string, error) {
 	resp, err := s.client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
+			Model: openai.GPT4oMini,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,

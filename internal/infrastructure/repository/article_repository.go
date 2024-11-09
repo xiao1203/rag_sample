@@ -25,10 +25,15 @@ func NewArticleRepository(client *qdrant.Client, openAIService service.OpenAISer
 	return &articleRepository{client: client, openAIService: openAIService, collectionName: collectionName}
 }
 
-// FindByID implements repository.ArticleRepository.
+// テキストデータをベクトル化し、それに近いデータをQdrantから取得する。
 func (a *articleRepository) FindSimilarTextsByText(text string, limit uint64) (*[]string, error) {
-	// ベクトルの検索
+	// テキストのベクトル化
+	queryVector, err := a.openAIService.VectorizeText(text)
+	if err != nil {
+		return nil, fmt.Errorf("文章のベクトル化に失敗しました: %w", err)
+	}
 
+	// ベクトルの検索
 	queryParams := &qdrant.QueryPoints{
 		CollectionName: a.collectionName,
 		Query:          qdrant.NewQuery(queryVector...),
@@ -69,7 +74,7 @@ func (a *articleRepository) FindSimilarTextsByText(text string, limit uint64) (*
 	return &texts, nil
 }
 
-// Save implements repository.ArticleRepository.
+// テキストデータをベクトル化し、Qdrantに登録する
 func (a *articleRepository) Save(texts *[]string) error {
 
 	// コレクションの存在確認
@@ -88,7 +93,7 @@ func (a *articleRepository) Save(texts *[]string) error {
 	}
 
 	// 文章データの登録
-	err = insertTextData(a.client, a.collectionName, texts)
+	err = a.insertTextData(a.client, a.collectionName, texts)
 	if err != nil {
 		log.Fatalf("データの挿入に失敗しました: %v", err)
 	}
@@ -99,7 +104,7 @@ func createCollection(client *qdrant.Client, collectionName string) error {
 	err := client.CreateCollection(context.Background(), &qdrant.CreateCollection{
 		CollectionName: collectionName,
 		VectorsConfig: qdrant.NewVectorsConfig(&qdrant.VectorParams{
-			Size:     384, // ベクトルのサイズ（使用するモデルに応じて調整）
+			Size:     1536, // ベクトルのサイズ（使用するモデルに応じて調整）
 			Distance: qdrant.Distance_Cosine,
 		}),
 	})
@@ -111,19 +116,18 @@ func createCollection(client *qdrant.Client, collectionName string) error {
 	return nil
 }
 
-func insertTextData(client *qdrant.Client, collectionName string, texts *[]string) error {
+// 渡されたテキストデータをベクトル化してQdrantに登録する
+func (a *articleRepository) insertTextData(client *qdrant.Client, collectionName string, texts *[]string) error {
 	points := make([]*qdrant.PointStruct, len(*texts))
 	for i, text := range *texts {
-		// 注意: 実際のアプリケーションでは、ここで文章をベクトル化する処理が必要です
-		// この例では、簡単のためにダミーのベクトルを使用しています
-		dummyVector := make([]float32, 384)
-		for j := range dummyVector {
-			dummyVector[j] = float32(i) * 0.1 // ダミーの値
+		vedtor, err := a.openAIService.VectorizeText(text)
+		if err != nil {
+			return fmt.Errorf("文章のベクトル化に失敗しました: %w", err)
 		}
 
 		points[i] = &qdrant.PointStruct{
 			Id:      qdrant.NewIDNum(uint64(i + 1)),
-			Vectors: qdrant.NewVectors(dummyVector...),
+			Vectors: qdrant.NewVectors(vedtor...),
 			Payload: qdrant.NewValueMap(map[string]any{"text": text}),
 		}
 	}
@@ -132,6 +136,10 @@ func insertTextData(client *qdrant.Client, collectionName string, texts *[]strin
 		CollectionName: collectionName,
 		Points:         points,
 	})
+
+	if err != nil {
+		return fmt.Errorf("データの挿入に失敗しました: %w", err)
+	}
 	return err
 }
 
