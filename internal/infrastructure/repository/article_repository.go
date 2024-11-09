@@ -27,6 +27,7 @@ func NewArticleRepository(client *qdrant.Client, openAIService service.OpenAISer
 
 // テキストデータをベクトル化し、それに近いデータをQdrantから取得する。
 func (a *articleRepository) FindSimilarTextsByText(text string, limit uint64) (*[]string, error) {
+
 	// テキストのベクトル化
 	queryVector, err := a.openAIService.VectorizeText(text)
 	if err != nil {

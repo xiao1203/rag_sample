@@ -23,7 +23,7 @@ func main() {
 
 	openAIService := openai.NewOpenAIService(os.Getenv("OPENAI_API_KEY"))
 	webScraperService := webscraper.NewScraper()
-	articleRepo := repository.NewArticleRepository(qdrantClient, openAIService, "rag_sample_collection")
+	articleRepo := repository.NewArticleRepository(qdrantClient, openAIService, "test")
 	articleUseCase := usecase.NewArticleUseCase(articleRepo, webScraperService, openAIService)
 	articleController := controller.NewArticleController(articleUseCase)
 

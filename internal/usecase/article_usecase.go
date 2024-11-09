@@ -15,8 +15,9 @@ type ArticleUseCase struct {
 func NewArticleUseCase(
 	articleRepository repository.ArticleRepository,
 	scraperService *webscraper.ScraperService,
-	openAIService service.OpenAIService) *ArticleUseCase {
-	return &ArticleUseCase{articleRepository: articleRepository, scraperService: scraperService}
+	openAIService service.OpenAIService,
+) *ArticleUseCase {
+	return &ArticleUseCase{articleRepository: articleRepository, scraperService: scraperService, openAIService: openAIService}
 }
 
 func (uc *ArticleUseCase) SaveArticle(url string) error {
@@ -48,13 +49,15 @@ func (uc *ArticleUseCase) AnswerQuestion(question string) (string, error) {
 
 	// 参照情報を元に質問に対する回答をOpenAIに問い合わせ
 	prompt := `
-		以下の質問に対し、下記の情報をもとに回答を生成してください。
+		以下の質問に対し、下記の参照情報をもとに回答を生成してください。
 		[質問]
 		` + question + `
 
 		[参照情報]
 		` + referenceText + `
 	`
+
+	// fmt.Println("prompt: ", prompt)
 	answer, err := uc.openAIService.GenerateText(prompt)
 	if err != nil {
 		return "", err

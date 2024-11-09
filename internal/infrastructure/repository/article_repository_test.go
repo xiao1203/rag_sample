@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"os"
 	"reflect"
@@ -111,34 +110,34 @@ func Test_articleRepository_FindSimilarTextsByText(t *testing.T) {
 		collectionName: "test",
 	}
 
-	// テストデータの登録
-	dataBytes, err := os.ReadFile("./testdata/fixtures/article/find/sample.json")
-	if err != nil {
-		t.Fatalf("テストデータの読み込みに失敗しました: %v", err)
-	}
+	// // テストデータの登録
+	// dataBytes, err := os.ReadFile("./testdata/fixtures/article/find/sample.json")
+	// if err != nil {
+	// 	t.Fatalf("テストデータの読み込みに失敗しました: %v", err)
+	// }
 
-	var data []TestData
-	if err := json.Unmarshal(dataBytes, &data); err != nil {
-		t.Fatalf("JSONデータを読み込むことができません: %v", err)
-	}
+	// var data []TestData
+	// if err := json.Unmarshal(dataBytes, &data); err != nil {
+	// 	t.Fatalf("JSONデータを読み込むことができません: %v", err)
+	// }
 
-	points := make([]*qdrant.PointStruct, len(data))
-	for i, v := range data {
-		vedtor := v.Vector
+	// points := make([]*qdrant.PointStruct, len(data))
+	// for i, v := range data {
+	// 	vedtor := v.Vector
 
-		points[i] = &qdrant.PointStruct{
-			Id:      qdrant.NewIDNum(uint64(i + 1)),
-			Vectors: qdrant.NewVectors(vedtor...),
-			Payload: qdrant.NewValueMap(map[string]any{"text": v.Text}),
-		}
-	}
-	_, err = client.Upsert(context.Background(), &qdrant.UpsertPoints{
-		CollectionName: "test",
-		Points:         points,
-	})
-	if err != nil {
-		t.Fatalf("テストデータの登録に失敗しました: %v", err)
-	}
+	// 	points[i] = &qdrant.PointStruct{
+	// 		Id:      qdrant.NewIDNum(uint64(i + 1)),
+	// 		Vectors: qdrant.NewVectors(vedtor...),
+	// 		Payload: qdrant.NewValueMap(map[string]any{"text": v.Text}),
+	// 	}
+	// }
+	// _, err = client.Upsert(context.Background(), &qdrant.UpsertPoints{
+	// 	CollectionName: "test",
+	// 	Points:         points,
+	// })
+	// if err != nil {
+	// 	t.Fatalf("テストデータの登録に失敗しました: %v", err)
+	// }
 
 	type args struct {
 		text  string
